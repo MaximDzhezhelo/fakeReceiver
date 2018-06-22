@@ -1,0 +1,12 @@
+server:
+    port: 19090
+    address: 0.0.0.0
+
+logging:
+       config: 'classpath:config/logback.xml'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health", "prometheus"]
