@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +18,45 @@ public class OrderHandler {
 
     public Mono<ServerResponse> ok(ServerRequest serverRequest) {
         final String requestId = UUID.randomUUID().toString();
+//        return serverRequest
+//                .bodyToMono(ValueDto.class)
+//                .doOnNext(order -> log.info("get order request " + order))
+//                .map(i -> {
+//                    log.info("map 1 " + requestId);
+//                    return i;
+//                })
+//                .map(i -> {
+//                    log.info("map 2 " + requestId);
+//                    return i;
+//                })
+//                .map(i -> {
+//                    log.info("map 3 " + requestId);
+//                    return i;
+//                })
+//                .flatMap(req -> ServerResponse.ok().build());
+//        return serverRequest
+//                .bodyToMono(ValueDto.class)
+//                .doOnNext(order -> log.info("get order request " + order))
+//                .map(i -> {
+//                    log.info("map 1 " + requestId);
+//                    return i;
+//                })
+//                .map(i -> {
+//                    log.info("map 2 " + requestId);
+//                    return i;
+//                })
+//                .map(i -> {
+//                    log.info("map 3 " + requestId);
+//                    return i;
+//                })
+//                .flatMap(i ->
+//                        Mono.just(i)
+//                                .delayElement(Duration.ofMillis(1500))
+//                )
+//                        .flatMap(req -> ServerResponse.ok().build())
+//                .flatMap(req -> ServerResponse.ok().build());
+
+
         return serverRequest
                 .bodyToMono(ValueDto.class)
                 .doOnNext(order -> log.info("get order request " + order))
@@ -33,12 +73,11 @@ public class OrderHandler {
                     return i;
                 })
                 .flatMap(i -> Mono.fromCallable(() -> executeLongMethod(i, requestId))
-                        .subscribeOn(Schedulers.elastic())
-                        .map(v -> {
-                            log.info("map 5 " + requestId);
-                            return v;
-                        })
-                        .flatMap(req -> ServerResponse.ok().build()))
+                        .subscribeOn(Schedulers.elastic()))
+                .map(v -> {
+                    log.info("map 5 " + requestId);
+                    return v;
+                })
                 .flatMap(req -> ServerResponse.ok().build());
     }
 
